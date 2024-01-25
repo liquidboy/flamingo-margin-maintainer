@@ -16,4 +16,4 @@ COPY --from=builder /flamingo_liquidator/package.json ./package.json
 COPY --from=builder /flamingo_liquidator/dist ./dist
 COPY --from=builder /flamingo_liquidator/config ./config
 
-CMD ["npm", "run", "liquidator"]
+CMD ["npm", "run", "maintainer"]

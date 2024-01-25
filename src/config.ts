@@ -61,6 +61,12 @@ const config = convict({
     arg: 'priceUrl',
     env: 'PRICE_URL',
   },
+  flamingoPriceUrl: {
+    format: String,
+    default: '',
+    arg: 'flamingoPriceUrl',
+    env: 'FLAMINGO_PRICE_URL',
+  },
   onChainPriceOnly: {
     format: Boolean,
     default: false,

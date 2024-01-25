@@ -16,8 +16,8 @@ const properties = config.getProperties();
 const PRIVATE_KEY: string = properties.privateKey;
 const OWNER: wallet.Account = new wallet.Account(PRIVATE_KEY);
 const DRY_RUN: boolean = properties.dryRun;
-const FTOKEN_SCRIPT_HASH = properties.fTokenScriptHash;
-const COLLATERAL_SCRIPT_HASH = properties.collateralScriptHash;
+const FTOKEN_SCRIPT_HASH = properties.fTokenScriptHash; // fUSD
+const COLLATERAL_SCRIPT_HASH = properties.collateralScriptHash; // FLUND | bNEO | fWBTC
 const ON_CHAIN_PRICE_ONLY = properties.onChainPriceOnly;
 const ON_CHAIN_PRICE_DECIMALS = 20;
 const MAINTAINER_NAME = properties.maintainerName;
@@ -350,38 +350,38 @@ async function attemptMarginMaintenance(
 ) {
   const loanToValue = computeLoanToValue(vault, priceData);
   const address = wallet.getAddressFromScriptHash(vault.account);
-
   const collateralPrint = vault.collateralBalance.toString().padStart(9, "0").padStart(16, " ");
   const delimitedCollateral = collateralPrint.slice(0, 8).concat(".", collateralPrint.slice(8));
   const fTokenPrint = vault.fTokenBalance.toString().padStart(9, "0").padStart(16, " ");
   const delimitedFToken = fTokenPrint.slice(0, 8).concat(".", fTokenPrint.slice(8));
 
-  logger.info(`Processing: ${address}, Collateral: ${delimitedCollateral}, FToken: ${delimitedFToken}, LTV: ${loanToValue}`);
+  //logger.info(`Processing: ${address}, Collateral: ${delimitedCollateral}, FToken: ${delimitedFToken}, LTV: ${loanToValue}`);
+  // logger.debug(`Attempting margin maintenance: Account: ${vault.account}, Collateral: ${COLLATERAL_SYMBOL}, FToken: ${FTOKEN_SYMBOL}, LTV: ${loanToValue}, Max LTV: ${MAX_LOAN_TO_VALUE}`);
 
   if (loanToValue > MAX_LOAN_TO_VALUE) {
     const maintenanceQuantity = computeMaintenanceQuantity(fTokenBalance, vault, priceData);
     const scaledMaintenanceQuantity = maintenanceQuantity / FTOKEN_MULTIPLIER;
     if (scaledMaintenanceQuantity > MAINTENANCE_THRESHOLD) {
-      logger.info(`Maintaining margin: Account: ${address}, LTV: ${loanToValue}, Max LTV: ${MAX_LOAN_TO_VALUE}`);
+      logger.info(`✅ Account: ${address} , Max LTV: ${MAX_LOAN_TO_VALUE}, LTV: ${loanToValue} ${loanToValue > 35 ? '👀' : ''}`);
       try {
         await maintainMargin(notification, vault.account, maintenanceQuantity, priceData);
         return true;
       } catch (e) {
-        logger.error('Failed to maintain margin - your funds have not been sent');
+        logger.error('✅ ❌ Failed to maintain margin - your funds have not been sent');
         logger.error(e);
         WebhookUtils.postMaintenanceFailure(DRY_RUN, MAINTAINER_NAME, COLLATERAL_SYMBOL, FTOKEN_SYMBOL);
         return false;
       }
     } else {
-      logger.debug(`Did not maintain margin: Account: ${address}, Collateral: ${COLLATERAL_SYMBOL},`
-          + ` FToken: ${FTOKEN_SYMBOL}, LTV: ${loanToValue}, Max LTV: ${MAX_LOAN_TO_VALUE}`
-          + ` because maintenanceQuantity=${scaledMaintenanceQuantity} < MAINTENANCE_THRESHOLD=${MAINTENANCE_THRESHOLD}`);
+      logger.info(`❌ Did not maintain margin: Account: ${address}, Collateral: ${COLLATERAL_SYMBOL},`
+          + ` FToken: ${FTOKEN_SYMBOL}, Max LTV: ${MAX_LOAN_TO_VALUE}, LTV: ${loanToValue} ${loanToValue > 35 ? '👀' : ''}`);
+          //+ ` because maintenanceQuantity=${scaledMaintenanceQuantity} < MAINTENANCE_THRESHOLD=${MAINTENANCE_THRESHOLD}`);
       return false;
     }
   } else {
-    logger.debug(`Did not maintain margin: Account: ${address}, Collateral: ${COLLATERAL_SYMBOL},`
-        + ` FToken: ${FTOKEN_SYMBOL}, LTV: ${loanToValue}, Max LTV: ${MAX_LOAN_TO_VALUE}`
-        + ` because loanToValue=${loanToValue} < MAX_LOAN_TO_VALUE=${MAX_LOAN_TO_VALUE}`);
+    logger.info(`❌ Did not maintain margin: Account: ${address}, Collateral: ${COLLATERAL_SYMBOL},`
+        + ` FToken: ${FTOKEN_SYMBOL}, Max LTV: ${MAX_LOAN_TO_VALUE}, LTV: ${loanToValue} ${loanToValue > 35 ? '👀' : ''}`);
+        //+ ` because loanToValue=${loanToValue} < MAX_LOAN_TO_VALUE=${MAX_LOAN_TO_VALUE}`);
     return false;
   }
 }
@@ -394,10 +394,10 @@ function sleep(millis: number) {
 // Main loop
 (async () => {
   // 0. Wait for initialization
-  logger.info('Starting margin maintainer...');
+  logger.info('🟢 Starting margin maintainer...');
 
   const { address } = OWNER;
-  logger.info(`Wallet address=${address}`);
+  logger.info(`💰 Wallet address=${address}`);
 
   FTOKEN_SYMBOL = await DapiUtils.symbol(FTOKEN_SCRIPT_HASH);
   FTOKEN_MULTIPLIER = 10 ** (await DapiUtils.decimals(FTOKEN_SCRIPT_HASH));
@@ -430,12 +430,12 @@ function sleep(millis: number) {
     logger.info(`Collateral offchain price: ${priceData.collateralOffChainPrice  / (10 ** priceData.decimals)}`);
 
     const fTokenBalance = await DapiUtils.getBalance(FTOKEN_SCRIPT_HASH, OWNER);
-    logger.info(`Current ${FTOKEN_SYMBOL} balance: ${fTokenBalance / FTOKEN_MULTIPLIER}`);
+    logger.info(`🏦 ${FTOKEN_SYMBOL} balance: ${fTokenBalance / FTOKEN_MULTIPLIER}`);
 
     // 2. Notify if balance is low
     const scaledFTokenBalance = fTokenBalance / FTOKEN_MULTIPLIER;
     if (scaledFTokenBalance < LOW_BALANCE_THRESHOLD) {
-      logger.warn(`Current ${FTOKEN_SYMBOL} balance=${scaledFTokenBalance} < lowBalanceThreshold=${LOW_BALANCE_THRESHOLD}`);
+      logger.warn(`⛑⛑⛑ ${FTOKEN_SYMBOL} balance=${scaledFTokenBalance} < lowBalanceThreshold=${LOW_BALANCE_THRESHOLD} ⛑⛑⛑`);
       WebhookUtils.postLowBalance(DRY_RUN, MAINTAINER_NAME, COLLATERAL_SYMBOL, FTOKEN_SYMBOL, scaledFTokenBalance, LOW_BALANCE_THRESHOLD);
     }
 
@@ -470,7 +470,7 @@ function sleep(millis: number) {
     }
 
     const collateralBalance = await DapiUtils.getBalance(COLLATERAL_SCRIPT_HASH, OWNER);
-    logger.info(`Current ${COLLATERAL_SYMBOL} balance: ${collateralBalance / COLLATERAL_MULTIPLIER}`);
+    logger.info(`🏦 ${COLLATERAL_SYMBOL} balance: ${collateralBalance / COLLATERAL_MULTIPLIER}`);
 
     // 4. Swap collateral back to FToken if desired
     if (AUTO_SWAP && collateralBalance > SWAP_THRESHOLD) {
@@ -487,7 +487,7 @@ function sleep(millis: number) {
     const elapsedMillis = new Date().getTime() - startMillis;
     const remainingMillis = Math.max(0, SLEEP_MILLIS - elapsedMillis);
     if (remainingMillis > 0) {
-      logger.info(`Sleeping ${remainingMillis} milliseconds...`);
+      logger.info(`💤💤💤 ${remainingMillis} milliseconds... 💤💤💤`);
       await sleep(remainingMillis);
     }
   }

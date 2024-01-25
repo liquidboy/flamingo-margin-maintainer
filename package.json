@@ -9,6 +9,9 @@
   "scripts": {
     "maintainer-dev": "npx ts-node ./src/maintainer.ts",
     "maintainer": "node .",
+    "maintainer-legacy": "node ./dist/maintainer.js",
+    "arber-dev": "npx ts-node ./src/arber.ts",
+    "arber": "node ./dist/arber.js",
     "build": "tsc --project ./",
     "test": "echo \"Error: no test specified\" && exit 1",
     "lint": "eslint . --ext .ts,"

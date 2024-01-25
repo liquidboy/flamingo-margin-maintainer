@@ -25,6 +25,7 @@ export const ROUTER_SCRIPT_HASH: string = properties.routerScriptHash;
 export const VAULT_SCRIPT_HASH: string = properties.vaultScriptHash;
 export const PRICE_FEED_SCRIPT_HASH: string = properties.priceFeedScriptHash;
 export const PRICE_URL: string = properties.priceUrl;
+export const FLAMINGO_PRICE_URL: string = properties.flamingoPriceUrl;
 
 export const MAINTAIN_COLLATERAL: string = 'LiquidateCollateral';
 
@@ -71,6 +72,10 @@ function castAccountVaultBalances(ret: any) {
 
 export async function getPriceFeed() {
   return axios.get(PRICE_URL).then((ret) => ret.data);
+}
+
+export async function getFlamingoPriceFeed() {
+  return axios.get(FLAMINGO_PRICE_URL).then((ret) => ret.data);
 }
 
 // Entry point for all read operations
