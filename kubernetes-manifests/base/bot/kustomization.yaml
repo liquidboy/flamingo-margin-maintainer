@@ -1,3 +1,7 @@
 resources:
   - maintainer.neo.stateful-set.yaml
   - maintainer.neo.service.yaml
+  - maintainer.btc.stateful-set.yaml
+  - maintainer.btc.service.yaml
+  - maintainer.flund.stateful-set.yaml
+  - maintainer.flund.service.yaml

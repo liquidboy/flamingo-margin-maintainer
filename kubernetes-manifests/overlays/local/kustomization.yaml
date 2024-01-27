@@ -5,5 +5,5 @@ resources:
   - ../../base/bot
 
 images:
-  - name: 'maintainer-neo-image'
+  - name: 'maintainer-image'
     newName: flamingo_margin_maintainer:latest

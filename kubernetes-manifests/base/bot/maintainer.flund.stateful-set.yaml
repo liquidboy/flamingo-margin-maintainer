@@ -1,17 +1,17 @@
 apiVersion: apps/v1
 kind: StatefulSet
 metadata:
-  name: maintainer-neo
+  name: maintainer-flund
 spec:
-  serviceName: maintainer-neo
+  serviceName: maintainer-flund
   replicas: 1
   selector:
     matchLabels:
-      app: maintainer-neo
+      app: maintainer-flund
   template:
     metadata:
       labels:
-        app: maintainer-neo
+        app: maintainer-flund
     spec:
       securityContext:
         runAsNonRoot: true
@@ -19,7 +19,7 @@ spec:
         fsGroup: 2000
         runAsGroup: 2000
       containers:
-        - name: maintainer-neo
+        - name: maintainer-flund
           image: maintainer-image
           imagePullPolicy: IfNotPresent
           resources:
@@ -34,7 +34,7 @@ spec:
             - name: NODE_ENV
               value: "prod"
             - name: COLLATERAL_SCRIPT_HASH
-              value: "0x48c40d4666f93408be1bef038b6722404d9a4c2a"
+              value: "0xa9603a59e21d29e37ac39cf1b5f5abf5006b22a3"
             #- name: PRIVATE_KEY [comes from k8 secrets populated from local keepass via kse.sh]
             #  value: XXXXXXXXXXX
           ports:
