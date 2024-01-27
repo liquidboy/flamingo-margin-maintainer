@@ -35,6 +35,8 @@ spec:
               value: "prod"
             - name: COLLATERAL_SCRIPT_HASH
               value: "0x48c40d4666f93408be1bef038b6722404d9a4c2a"
+            #- name: PRIVATE_KEY [comes from k8 secrets populated from local keepass via kse.sh]
+            #  value: XXXXXXXXXXX
           ports:
             - containerPort: 50597
               name: http 
