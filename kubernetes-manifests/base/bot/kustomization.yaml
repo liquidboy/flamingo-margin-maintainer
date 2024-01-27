@@ -1,0 +1,3 @@
+resources:
+  - maintainer.neo.stateful-set.yaml
+  - maintainer.neo.service.yaml

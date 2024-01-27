@@ -1,0 +1,13 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: maintainer-neo
+spec:
+  selector:
+    app: maintainer-neo
+  ports:
+    - name: http
+      port: 50597
+    - name: jmx
+      port: 8778
+    

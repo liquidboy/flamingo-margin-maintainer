@@ -1,0 +1,44 @@
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: maintainer-neo
+spec:
+  serviceName: maintainer-neo
+  replicas: 1
+  selector:
+    matchLabels:
+      app: maintainer-neo
+  template:
+    metadata:
+      labels:
+        app: maintainer-neo
+    spec:
+      securityContext:
+        runAsNonRoot: true
+        runAsUser: 1000
+        fsGroup: 2000
+        runAsGroup: 2000
+      containers:
+        - name: maintainer-neo
+          image: maintainer-neo-image
+          imagePullPolicy: IfNotPresent
+          resources:
+            requests:
+              memory: "1Gi"
+          envFrom:
+            - secretRef:
+                name: maintainer-secrets
+          env:
+            - name: DRY_RUN
+              value: "false"
+            - name: NODE_ENV
+              value: "prod"
+            - name: COLLATERAL_SCRIPT_HASH
+              value: "0x48c40d4666f93408be1bef038b6722404d9a4c2a"
+          ports:
+            - containerPort: 50597
+              name: http 
+          securityContext:
+            runAsNonRoot: true
+            runAsUser: 1000
+            runAsGroup: 2000
