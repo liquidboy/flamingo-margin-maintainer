@@ -27,7 +27,7 @@ spec:
               memory: "1Gi"
           envFrom:
             - secretRef:
-                name: maintainer-secrets
+                name: maintainer-flund-secrets
           env:
             - name: DRY_RUN
               value: "false"

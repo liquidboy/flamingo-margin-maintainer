@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-read -ra SECRETS <<< $(keepassxc-cli show -a Notes "${HOME}/Downloads/FlamingoPasswords.kdbx" "all.secrets.env")
+read -ra SECRETS <<< $(keepassxc-cli show -a Notes "${HOME}/Downloads/FlamingoPasswords.kdbx" "neo.secrets")
 
 #
 #envFrom:
@@ -25,11 +25,40 @@ RESULT=$(cat <<EOF
   apiVersion: v1
   kind: Secret
   metadata:
-    name: maintainer-secrets
+    name: maintainer-neo-secrets
   type: Opaque
   data:
 $ENCODED_SECRETS
 EOF
 )
 
+echo "$RESULT" | kubectl apply -f -
+
+read -ra SECRETS <<< $(keepassxc-cli show -a Notes "${HOME}/Downloads/FlamingoPasswords.kdbx" "flund.secrets")
+ENCODED_SECRETS=$(encode)
+RESULT=$(cat <<EOF
+  apiVersion: v1
+  kind: Secret
+  metadata:
+    name: maintainer-flund-secrets
+  type: Opaque
+  data:
+$ENCODED_SECRETS
+EOF
+)
+echo "$RESULT" | kubectl apply -f -
+
+
+read -ra SECRETS <<< $(keepassxc-cli show -a Notes "${HOME}/Downloads/FlamingoPasswords.kdbx" "btc.secrets")
+ENCODED_SECRETS=$(encode)
+RESULT=$(cat <<EOF
+  apiVersion: v1
+  kind: Secret
+  metadata:
+    name: maintainer-btc-secrets
+  type: Opaque
+  data:
+$ENCODED_SECRETS
+EOF
+)
 echo "$RESULT" | kubectl apply -f -
