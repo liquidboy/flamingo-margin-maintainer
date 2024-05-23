@@ -1,0 +1,1 @@
+docker run  -e DRY_RUN=false -e NODE_ENV=prod -e PRIVATE_KEY=XXXXXXXXX -e COLLATERAL_SCRIPT_HASH=0xd6abe115ecb75e1fa0b42f5e85934ce8c1ae2893 --rm -it flamingo_margin_maintainer

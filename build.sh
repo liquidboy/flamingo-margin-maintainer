@@ -1,0 +1,1 @@
+docker build -t flamingo_margin_maintainer .
