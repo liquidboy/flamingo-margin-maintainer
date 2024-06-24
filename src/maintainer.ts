@@ -373,14 +373,14 @@ async function attemptMarginMaintenance(
         return false;
       }
     } else {
-      logger.info(`❌ Did not maintain margin: Account: ${address}, Collateral: ${COLLATERAL_SYMBOL},`
-          + ` FToken: ${FTOKEN_SYMBOL}, Max LTV: ${MAX_LOAN_TO_VALUE}, LTV: ${loanToValue} ${loanToValue > 35 ? '👀' : ''}`);
+      logger.info(`❌ Did not maintain margin: Account: ${address}, Collat: ${delimitedCollateral} ${COLLATERAL_SYMBOL},`
+          + ` FToken: ${FTOKEN_SYMBOL} owed: ${delimitedFToken}, Max LTV: ${MAX_LOAN_TO_VALUE}, LTV: ${loanToValue} ${loanToValue > 35 ? '👀' : ''}`);
           //+ ` because maintenanceQuantity=${scaledMaintenanceQuantity} < MAINTENANCE_THRESHOLD=${MAINTENANCE_THRESHOLD}`);
       return false;
     }
   } else {
-    logger.info(`❌ Did not maintain margin: Account: ${address}, Collateral: ${COLLATERAL_SYMBOL},`
-        + ` FToken: ${FTOKEN_SYMBOL}, Max LTV: ${MAX_LOAN_TO_VALUE}, LTV: ${loanToValue} ${loanToValue > 35 ? '👀' : ''}`);
+    logger.info(`❌ Did not maintain margin: Account: ${address}, Collat: ${delimitedCollateral} ${COLLATERAL_SYMBOL},`
+        + ` ${FTOKEN_SYMBOL} owed: ${delimitedFToken}, Max LTV: ${MAX_LOAN_TO_VALUE}, LTV: ${loanToValue} ${loanToValue > 35 ? '👀' : ''}`)
         //+ ` because loanToValue=${loanToValue} < MAX_LOAN_TO_VALUE=${MAX_LOAN_TO_VALUE}`);
     return false;
   }
