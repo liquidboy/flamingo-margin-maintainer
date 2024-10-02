@@ -1,0 +1,13 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: maintainer-wbtc
+spec:
+  selector:
+    app: maintainer-wbtc
+  ports:
+    - name: http
+      port: 50597
+    - name: jmx
+      port: 8778
+    

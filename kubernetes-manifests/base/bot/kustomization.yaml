@@ -3,5 +3,7 @@ resources:
   - maintainer.neo.service.yaml
   - maintainer.btc.stateful-set.yaml
   - maintainer.btc.service.yaml
+  - maintainer.wbtc.stateful-set.yaml
+  - maintainer.wbtc.service.yaml
   - maintainer.flund.stateful-set.yaml
   - maintainer.flund.service.yaml
