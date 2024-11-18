@@ -46,7 +46,7 @@ function sleep(millis: number) {
   // eslint-disable-next-line no-promise-executor-return
   return new Promise((resolve) => setTimeout(resolve, millis));
 }
-
+const isUsdt = (elm: any) => elm.symbol === 'USDT';
 const isFusdt = (elm: any) => elm.symbol === 'fUSDT';
 const isFusd = (elm: any) => elm.symbol === 'FUSD';
 const isNeo = (elm: any) => elm.symbol === 'NEO';
@@ -58,12 +58,14 @@ const isFwbtc = (elm: any) => elm.symbol === 'fWBTC';
 async function getPrices() {
   // const priceData = await DapiUtils.getPriceFeed();
   const flamingoPriceData = await DapiUtils.getFlamingoPriceFeed();
+  
   // const { decimals } = priceData.data;
   // const decimalsFUSDT = await DapiUtils.decimals('0xcd48b160c1bbc9d74997b803b9a7ad50a4bef020');
 
   // const fUSDTOnChainPrice = +(await DapiUtils.getOnChainPrice('0x1005d400bcc2a56b7352f09e273be3f9933a5fb1', decimals));
   // const fUSDOnChainPrice = +(await DapiUtils.getOnChainPrice(FTOKEN_SCRIPT_HASH, decimals));
 
+  const usdt = flamingoPriceData.find(isUsdt);
   const fusdt = flamingoPriceData.find(isFusdt);
   const fusd = flamingoPriceData.find(isFusd);
   const neo = flamingoPriceData.find(isNeo);
@@ -76,6 +78,7 @@ async function getPrices() {
     // payload: priceData.payload,
     // signature: priceData.signature,
     // decimals: priceData.data.decimals,
+    usdt,
     fusdt,
     fusd,
     neo: neo.usd_price,
@@ -142,8 +145,8 @@ async function getPrices() {
     const walletFusdtBalance = await DapiUtils.getBalance(priceData1.fusdt.hash, OWNER);
     const fusdtTokenMultiplier = 10 ** (await DapiUtils.decimals(priceData1.fusdt.hash));
     logger.info(` ${JSON.stringify(priceData1)}`);
-    logger.info(`🏦 ${priceData1.fusd.symbol} balance: ${walletFusdBalance / fusdTokenMultiplier} price: ${priceData1.fusd.usd_price}`);
-    logger.info(`🏦 ${priceData1.fusdt.symbol} balance: ${walletFusdtBalance / fusdtTokenMultiplier} price: ${priceData1.fusdt.usd_price}`);
+    //logger.info(`🏦 ${priceData1.fusd.symbol} balance: ${walletFusdBalance / fusdTokenMultiplier} price: ${priceData1.fusd.usd_price}`);
+    //logger.info(`🏦 ${priceData1.fusdt.symbol} balance: ${walletFusdtBalance / fusdtTokenMultiplier} price: ${priceData1.fusdt.usd_price}`);
 
     // 4. Get existing trades
     // https://neo3.neotube.io/address/NU8yeRDnUrkgP4h5hsUSbe9nQnvHUdxQpG
