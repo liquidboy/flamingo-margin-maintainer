@@ -62,3 +62,17 @@ $ENCODED_SECRETS
 EOF
 )
 echo "$RESULT" | kubectl apply -f -
+
+read -ra SECRETS <<< $(keepassxc-cli show -a Notes "${HOME}/Downloads/FlamingoPasswords.kdbx" "btc.secrets")
+ENCODED_SECRETS=$(encode)
+RESULT=$(cat <<EOF
+  apiVersion: v1
+  kind: Secret
+  metadata:
+    name: maintainer-weth-secrets
+  type: Opaque
+  data:
+$ENCODED_SECRETS
+EOF
+)
+echo "$RESULT" | kubectl apply -f -

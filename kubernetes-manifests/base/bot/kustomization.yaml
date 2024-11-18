@@ -7,3 +7,5 @@ resources:
   - maintainer.wbtc.service.yaml
   - maintainer.flund.stateful-set.yaml
   - maintainer.flund.service.yaml
+  - maintainer.weth.stateful-set.yaml
+  - maintainer.weth.service.yaml
